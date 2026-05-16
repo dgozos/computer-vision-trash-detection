@@ -30,7 +30,7 @@ from ultralytics import YOLO
 
 # Add the Google Drive path to sys.path to import utils.py
 sys.path.append('/content/drive/My Drive/')
-import utils   # course utils.py
+import trash_detection_script.yolo11.utils as utils   # course utils.py
 
 device = utils.device
 MEAN   = utils.MEAN
@@ -562,6 +562,35 @@ for img_path in test_images:
 
 time_inf = time.time() - start
 print(f'Done: {len(test_images)} images in {time_inf:.1f}s ({len(test_images)/time_inf:.1f} img/s)')
+
+# ── Recyclable vs Landfill Classification ─────────────────
+# Simple post-processing — no additional model needed
+
+RECYCLE_MAP = {
+    'cardboard': 'recyclable',
+    'glass':     'recyclable',
+    'metal':     'recyclable',
+    'paper':     'recyclable',
+    'plastic':   'recyclable',
+    'trash':     'landfill',
+}
+
+# Apply to all predictions
+for pred in all_predictions:
+    for box in pred['pred_boxes']:
+        box['disposal'] = RECYCLE_MAP[box['class_name']]
+
+# Summary
+recycle_count = sum(1 for p in all_predictions for b in p['pred_boxes'] if b['disposal'] == 'recyclable')
+landfill_count = sum(1 for p in all_predictions for b in p['pred_boxes'] if b['disposal'] == 'landfill')
+
+print(f'Disposal Classification (test set)\n')
+print(f'  Recyclable : {recycle_count}')
+print(f'  Landfill   : {landfill_count}')
+print(f'  Total      : {recycle_count + landfill_count}')
+print(f'\nMapping:')
+for cls, disposal in RECYCLE_MAP.items():
+    print(f'  {cls:>12s} → {disposal}')
 
 # ── 8. Visualizations ──────────────────────────────────────────
 

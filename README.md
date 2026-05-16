@@ -72,7 +72,6 @@ This project builds the **perception module** for an autonomous ground robot des
 ├── .gitignore
 ├── data.yaml                    # Dataset config (paths + class names)
 ├── yolo11_trash_detection.ipynb # Main training & evaluation notebook
-├── recycle_landfill_cells.py    # Disposal classification post-processing
 ├── runs/
 │   └── project_detect/
 │       └── yolo11n_6cls/
@@ -115,7 +114,7 @@ This project builds the **perception module** for an autonomous ground robot des
 ### Requirements
 
 ```bash
-pip install ultralytics matplotlib seaborn scikit-learn pillow pandas pyyaml
+pip install -r trash_detection_script/requirements.txt
 ```
 
 ### Training
